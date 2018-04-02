@@ -80,6 +80,8 @@ class InstagramScraper(object):
     def __init__(self, **kwargs):
         default_attr = dict(username='', usernames=[], filename=None,
                             login_user=None, login_pass=None, login_only=False,
+                            # new cursor argument that tells where to start
+                            cursor='',
                             destination='./', retain_username=False, interactive=False,
                             quiet=False, maximum=0, media_metadata=False, latest=False,
                             latest_stamps=False,
@@ -437,6 +439,8 @@ class InstagramScraper(object):
         return self.__query_gen(QUERY_LOCATION, 'location', location)
 
     def __query_gen(self, url, entity_name, query, end_cursor=''):
+        if not end_cursor:
+            end_cursor = self.cursor
         """Generator for hashtag and location."""
         nodes, end_cursor = self.__query(url, entity_name, query, end_cursor)
 
@@ -1020,6 +1024,10 @@ def main():
     parser.add_argument('username', help='Instagram user(s) to scrape', nargs='*')
     parser.add_argument('--destination', '-d', default='./', help='Download destination')
     parser.add_argument('--login-user', '--login_user', '-u', default=None, help='Instagram login user')
+
+    # adds the cursor argument to start at
+    parser.add_argument('--cursor', '-c', default='', help='Cursor to start from')
+
     parser.add_argument('--login-pass', '--login_pass', '-p', default=None, help='Instagram login password')
     parser.add_argument('--login-only', '--login_only', '-l', default=False, action='store_true',
                         help='Disable anonymous fallback if login fails')
