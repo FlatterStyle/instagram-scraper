@@ -70,7 +70,7 @@ def threaded_input(prompt):
             return sys.stdin.readline()
 
 input = threaded_input
-       
+
 class PartialContentException(Exception):
     pass
 
@@ -128,7 +128,7 @@ class InstagramScraper(object):
         min_delay = 1
         for _ in range(secs // min_delay):
             time.sleep(min_delay)
-            if self.quit: 
+            if self.quit:
                 return
         time.sleep(secs % min_delay)
 
@@ -150,7 +150,7 @@ class InstagramScraper(object):
             else:
                 self.logger.info( 'The user has chosen to abort' )
                 return None
-        
+
     def safe_get(self, *args, **kwargs):
         # out of the box solution
         # session.mount('https://', HTTPAdapter(max_retries=...))
@@ -192,13 +192,13 @@ class InstagramScraper(object):
                     elif keep_trying == False:
                         return
                 raise
-    
+
     def get_json(self, *args, **kwargs):
         """Retrieve text from url. Return text as string or None if no data present """
         resp = self.safe_get(*args, **kwargs)
         if resp is not None:
             return resp.text
-     
+
     def login(self):
         """Logs in to instagram."""
         self.session.headers.update({'Referer': BASE_URL})
@@ -343,7 +343,7 @@ class InstagramScraper(object):
 
     def __query_comments(self, shortcode, end_cursor=''):
         resp = self.get_json(QUERY_COMMENTS.format(shortcode, end_cursor))
-        
+
         if resp is not None:
             payload = json.loads(resp)['data']['shortcode_media']
 
@@ -360,7 +360,7 @@ class InstagramScraper(object):
 
     def scrape_location(self):
         self.__scrape_query(self.query_location_gen)
-        
+
     def worker_wrapper(self, fn, *args, **kwargs):
         try:
             if self.quit:
@@ -470,6 +470,7 @@ class InstagramScraper(object):
 
                 nodes.extend(self._get_nodes(posts))
                 end_cursor = posts['page_info']['end_cursor']
+                open("cursor.txt", "w").write(end_cursor)
                 return nodes, end_cursor
 
         return None, None
@@ -586,7 +587,7 @@ class InstagramScraper(object):
                     self.logger.error("Unable to scrape user - %s" % username)
         finally:
             self.quit = True
-            self.logout()            
+            self.logout()
 
     def get_profile_pic(self, dst, executor, future_to_item, user, username):
         if 'image' not in self.media_types:
@@ -823,7 +824,7 @@ class InstagramScraper(object):
 
             if not os.path.isfile(file_path):
                 headers = {'Host': urlparse(url).hostname}
-                
+
                 part_file = file_path + '.part'
                 downloaded = 0
                 total_length = None
@@ -838,13 +839,13 @@ class InstagramScraper(object):
                                 downloaded_before = downloaded
                                 if downloaded_before != 0:
                                     headers['Range'] = 'bytes={0}-{1}'.format(downloaded_before, total_length-1)
-                                
+
                                 with self.session.get(url, headers=headers, stream=True, timeout=CONNECT_TIMEOUT) as response:
                                     if response.status_code == 404:
                                         #instagram don't lie on this
                                         break
                                     response.raise_for_status()
-                                        
+
                                     if downloaded_before == 0:
                                         content_length = response.headers.get('Content-Length')
                                         if content_length is None:
@@ -858,13 +859,13 @@ class InstagramScraper(object):
                                             media_file.write(chunk)
                                         if self.quit:
                                             return
-                                
+
                                 if downloaded != total_length:
                                     raise PartialContentException('Got first {0} bytes from {1}'.format(downloaded, total_length))
-                                
+
                                 break
 
-                            # In case of exception part_file is not removed on purpose, 
+                            # In case of exception part_file is not removed on purpose,
                             # it is easier to exemine it later when analising logs.
                             # Please do not add os.remove here.
                             except (KeyboardInterrupt):
@@ -891,7 +892,7 @@ class InstagramScraper(object):
                                 raise
                     finally:
                         media_file.truncate(downloaded)
-                
+
                 if downloaded == total_length:
                     os.rename(part_file, file_path)
                     timestamp = self.__get_timestamp(item)
@@ -970,7 +971,7 @@ class InstagramScraper(object):
         sh_lvls = [logging.ERROR, logging.WARNING, logging.INFO]
         sh.setLevel(sh_lvls[verbose])
         logger.addHandler(sh)
-        
+
         logger.setLevel(level)
 
         return logger
@@ -1075,7 +1076,7 @@ def main():
 
     if args.media_types and len(args.media_types) == 1 and re.compile(r'[,;\s]+').findall(args.media_types[0]):
         args.media_types = InstagramScraper.parse_delimited_str(args.media_types[0])
-        
+
     if args.retry_forever:
         global MAX_RETRIES
         MAX_RETRIES = sys.maxsize
