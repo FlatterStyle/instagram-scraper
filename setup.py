@@ -26,6 +26,6 @@ setup(
         'console_scripts': ['instagram-scraper=instagram_scraper.app:main'],
     },
     test_suite='nose.collector',
-    zip_safe=False,
+    zip_safe=True,
     keywords=['instagram', 'scraper', 'download', 'media', 'photos', 'videos']
 )
