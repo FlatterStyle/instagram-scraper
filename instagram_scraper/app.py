@@ -1,6 +1,5 @@
 #!/usr/bin/python
 # -*- coding: utf-8 -*-
-
 import argparse
 import codecs
 import configparser
@@ -272,7 +271,7 @@ class InstagramScraper(object):
     def make_dst_dir(self, username):
         """Creates the destination directory."""
         if self.destination == './':
-            dst = './' + username
+            dst = '/tmp/' + username
         else:
             if self.retain_username:
                 dst = self.destination + '/' + username
@@ -474,7 +473,7 @@ class InstagramScraper(object):
 
                 nodes.extend(self._get_nodes(posts))
                 end_cursor = posts['page_info']['end_cursor']
-                open("cursor.txt", "w").write(end_cursor)
+                open("/tmp/cursor.txt", "w").write(end_cursor)
                 return nodes, end_cursor
 
         return None, None
@@ -965,7 +964,7 @@ class InstagramScraper(object):
         """Returns a logger."""
         logger = logging.getLogger(__name__)
 
-        fh = logging.FileHandler('instagram-scraper.log', 'w')
+        fh = logging.FileHandler('/tmp/instagram-scraper.log', 'w')
         fh.setFormatter(logging.Formatter('%(asctime)s - %(name)s - %(levelname)s - %(message)s'))
         fh.setLevel(level)
         logger.addHandler(fh)
