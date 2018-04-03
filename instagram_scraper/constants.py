@@ -16,7 +16,7 @@ SEARCH_URL = BASE_URL + 'web/search/topsearch/?context=blended&query={0}'
 
 QUERY_COMMENTS = BASE_URL + 'graphql/query/?query_id=17852405266163336&shortcode={0}&first=100&after={1}'
 QUERY_HASHTAG = BASE_URL + 'graphql/query/?query_id=17882293912014529&tag_name={0}&first=100&after={1}'
-QUERY_LOCATION = BASE_URL + 'graphql/query/?query_id=17881432870018455&id={0}&first=100&after={1}'
+QUERY_LOCATION = BASE_URL + 'graphql/query/?query_id=17881432870018455&id={0}&first=10&after={1}'
 QUERY_MEDIA = BASE_URL + 'graphql/query/?query_id=17888483320059182&id={0}&first=100&after={1}'
 
 MAX_CONCURRENT_DOWNLOADS = 5
