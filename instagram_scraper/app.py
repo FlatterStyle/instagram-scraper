@@ -276,7 +276,6 @@ class InstagramScraper(object):
                 self.logger.warning('Failed to log out ' + self.login_user)
 
     def make_dst_dir(self, username):
-        print "Creating directory"
         """Creates the destination directory."""
         if self.destination == './':
             # dst = "./" + username
